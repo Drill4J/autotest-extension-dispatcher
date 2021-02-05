@@ -1,3 +1,5 @@
+import java.net.*
+
 plugins {
     application
     `maven-publish`
@@ -6,6 +8,7 @@ plugins {
     id("kotlinx-atomicfu")
     id("com.google.cloud.tools.jib")
     id("com.github.johnrengelman.shadow")
+    id("com.github.hierynomus.license")
 }
 
 val scriptUrl: String by extra
@@ -103,3 +106,15 @@ publishing {
         }
     }
 }
+
+val licenseFormatSettings by tasks.registering(com.hierynomus.gradle.license.tasks.LicenseFormat::class) {
+    source = fileTree(project.projectDir).also {
+        include("**/*.kt", "**/*.java", "**/*.groovy")
+        exclude("**/.idea")
+    }.asFileTree
+}
+license{
+    headerURI = URI("https://raw.githubusercontent.com/Drill4J/drill4j/develop/COPYRIGHT")
+}
+
+tasks["licenseFormat"].dependsOn(licenseFormatSettings)
